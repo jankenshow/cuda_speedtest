@@ -104,10 +104,10 @@ void test(int size, int iterations) {
         dim3 threads(thread_size, thread_size, 1);
 
         matmul<<<grid, threads>>>(d_out, d_x, d_y, x_height, y_width, num_prod);
-        cudaDeviceSynchronize();
 
 
         // 時間計測
+        // cudaDeviceSynchronize();
         // clock_gettime(CLOCK_REALTIME, &kernel_end_time);
         // sec = kernel_end_time.tv_sec - memcpy_end_time.tv_sec;
         // nsec = kernel_end_time.tv_nsec - memcpy_end_time.tv_nsec;

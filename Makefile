@@ -9,3 +9,6 @@ matmul_cuda:
 
 matmul_cublas:
 	nvcc -O3 matmul/matmul_cublas.cu -o build/matmul_cublas -lcublas
+
+mandelbrot_cuda:
+	nvcc -O3 mandelbrot/mandelbrot_cuda.cu -o build/mandelbrot_cuda
