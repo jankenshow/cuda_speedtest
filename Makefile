@@ -1,3 +1,6 @@
+time_utils:
+	g++ --std=c++17 -O3 src/time_utils.cpp -o build/time_utils -I./include
+
 matmul_cpu:
 	g++ -std=c++17 -O3 src/matmul/matmul_cpu.cpp -o build/matmul_cpu
 
