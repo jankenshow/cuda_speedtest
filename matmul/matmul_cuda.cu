@@ -48,12 +48,12 @@ void test(int size, int iterations) {
     float* out = new float[x_height * y_width];
     randn_matrices(x, y, x_height, y_width, num_prod);
 
-    // struct timespec start_time, memcpy_end_time, kernel_end_time, total_end_time;
-    // unsigned int sec;
-    // int nsec;
-    // double d_sec_memcpy = 0;
-    // double d_sec_kernel = 0;
-    // double d_sec_total = 0;
+    struct timespec start_time, memcpy_end_time, kernel_end_time, total_end_time;
+    unsigned int sec;
+    int nsec;
+    double d_sec_memcpy = 0;
+    double d_sec_kernel = 0;
+    double d_sec_total = 0;
 
     double d_sec_memcpy_cuda = 0;
     double d_sec_kernel_cuda = 0;
@@ -62,7 +62,7 @@ void test(int size, int iterations) {
     for (int num_iter=0; num_iter<(iterations+1); num_iter++) {
 
         // 時間計測
-        // clock_gettime(CLOCK_REALTIME, &start_time);
+        clock_gettime(CLOCK_REALTIME, &start_time);
 
         cudaEvent_t start, memh2d_stop, kernel_stop, memd2h_stop;
         cudaEventCreate(&start);
@@ -70,9 +70,6 @@ void test(int size, int iterations) {
         cudaEventCreate(&kernel_stop);
         cudaEventCreate(&memd2h_stop);
         cudaEventRecord(start);
-
-        // clock_t start, memh2d_stop, kernel_stop, memd2h_stop;
-        // start = clock();
 
 
         // メモリ移動 host -> device
@@ -89,11 +86,13 @@ void test(int size, int iterations) {
 
 
         // 時間計測
-        // cudaDeviceSynchronize();
-        // clock_gettime(CLOCK_REALTIME, &memcpy_end_time);
-        // sec = memcpy_end_time.tv_sec - start_time.tv_sec;
-        // nsec = memcpy_end_time.tv_nsec - start_time.tv_nsec;
-        // d_sec_memcpy += (double)sec + (double)nsec / (1000 * 1000 * 1000);
+        if (num_iter != 0) {
+            cudaDeviceSynchronize();
+            clock_gettime(CLOCK_REALTIME, &memcpy_end_time);
+            sec = memcpy_end_time.tv_sec - start_time.tv_sec;
+            nsec = memcpy_end_time.tv_nsec - start_time.tv_nsec;
+            d_sec_memcpy += (double)sec * 1000 + (double)nsec / (1000 * 1000);
+        }
 
         cudaEventRecord(memh2d_stop);
         cudaEventSynchronize(memh2d_stop);
@@ -107,11 +106,13 @@ void test(int size, int iterations) {
 
 
         // 時間計測
-        // cudaDeviceSynchronize();
-        // clock_gettime(CLOCK_REALTIME, &kernel_end_time);
-        // sec = kernel_end_time.tv_sec - memcpy_end_time.tv_sec;
-        // nsec = kernel_end_time.tv_nsec - memcpy_end_time.tv_nsec;
-        // d_sec_kernel += (double)sec + (double)nsec / (1000 * 1000 * 1000);
+        if (num_iter != 0) {
+            cudaDeviceSynchronize();
+            clock_gettime(CLOCK_REALTIME, &kernel_end_time);
+            sec = kernel_end_time.tv_sec - memcpy_end_time.tv_sec;
+            nsec = kernel_end_time.tv_nsec - memcpy_end_time.tv_nsec;
+            d_sec_kernel += (double)sec * 1000 + (double)nsec / (1000 * 1000);
+        }
 
         cudaEventRecord(kernel_stop);
         cudaEventSynchronize(kernel_stop);
@@ -122,11 +123,13 @@ void test(int size, int iterations) {
 
 
         // 時間計測
-        // cudaDeviceSynchronize();
-        // clock_gettime(CLOCK_REALTIME, &memcpy_end_time);
-        // sec = total_end_time.tv_sec - start_time.tv_sec;
-        // nsec = total_end_time.tv_nsec - start_time.tv_nsec;
-        // d_sec_total += (double)sec + (double)nsec / (1000 * 1000 * 1000);
+        if (num_iter != 0) {
+            cudaDeviceSynchronize();
+            clock_gettime(CLOCK_REALTIME, &total_end_time);
+            sec = total_end_time.tv_sec - start_time.tv_sec;
+            nsec = total_end_time.tv_nsec - start_time.tv_nsec;
+            d_sec_total += (double)sec * 1000 + (double)nsec / (1000 * 1000);
+        }
 
         cudaEventRecord(memd2h_stop);
         cudaEventSynchronize(memd2h_stop);
@@ -134,16 +137,11 @@ void test(int size, int iterations) {
         if (num_iter != 0) {
             float milisec = 0.0;
             cudaEventElapsedTime(&milisec, start, memd2h_stop);
-            d_sec_total_cuda += milisec / 1000;
-            // printf("処理時間 : トータル = %f\n", milisec);
+            d_sec_total_cuda += milisec;
             cudaEventElapsedTime(&milisec, start, memh2d_stop);
-            d_sec_memcpy_cuda += milisec / 1000;
-            // printf("処理時間 : メモリ移動(host to device) = %f\n", milisec);
+            d_sec_memcpy_cuda += milisec;
             cudaEventElapsedTime(&milisec, memh2d_stop, kernel_stop);
-            d_sec_kernel_cuda += milisec / 1000;
-            // printf("処理時間 : カーネル実行 = %f\n", milisec);
-            // cudaEventElapsedTime(&milisec, kernel_stop, memd2h_stop);
-            // printf("処理時間 : メモリ移動(device to host) = %f\n", milisec);
+            d_sec_kernel_cuda += milisec;
         }
 
         // 時間計測後処理
@@ -163,9 +161,9 @@ void test(int size, int iterations) {
 
     cudaDeviceReset();
 
-    // d_sec_memcpy /= iterations;
-    // d_sec_kernel /= iterations;
-    // d_sec_total /= iterations;
+    d_sec_memcpy /= iterations;
+    d_sec_kernel /= iterations;
+    d_sec_total /= iterations;
 
     d_sec_memcpy_cuda /= iterations;
     d_sec_kernel_cuda /= iterations;
@@ -173,12 +171,9 @@ void test(int size, int iterations) {
 
     printf("行列サイズ=%d\n", size);
     printf("計算結果=%f\n", out[x_height * y_width - 1]);
-    // printf("処理時間 : メモリ移動 = %lf vs %lf\n", d_sec_memcpy, d_sec_memcpy_cuda);
-    // printf("処理時間 : カーネル実行 =%lf vs %lf\n", d_sec_kernel, d_sec_kernel_cuda);
-    // printf("処理時間 : トータル =%lf vs %lf\n", d_sec_total, d_sec_total_cuda);
-    printf("処理時間 : メモリ移動 = %lf\n", d_sec_memcpy_cuda);
-    printf("処理時間 : カーネル実行 =%lf\n", d_sec_kernel_cuda);
-    printf("処理時間 : トータル =%lf\n", d_sec_total_cuda);
+    printf("処理時間 : メモリ移動 = %lf vs %lf\n", d_sec_memcpy, d_sec_memcpy_cuda);
+    printf("処理時間 : カーネル実行 =%lf vs %lf\n", d_sec_kernel, d_sec_kernel_cuda);
+    printf("処理時間 : トータル =%lf vs %lf\n", d_sec_total, d_sec_total_cuda);
 
     delete[] x;
     delete[] y;
