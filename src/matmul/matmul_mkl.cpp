@@ -2,30 +2,10 @@
 
 #define minimum(x,y) (((x) < (y)) ? (x) : (y))
 
-#include <sys/time.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <random>
 #include "mkl.h"
-
-
-inline void randn_matrices (float* x, float* y, float* out, int x_height, int y_width, int num_prod) {
-    std::random_device rnd;
-    std::default_random_engine eng(rnd());
-    std::uniform_real_distribution<float> distr(-1, 1);
-
-    for (int i=0; i < x_height * num_prod; i++) {
-        x[i] = (float)distr(eng);
-    }
-
-    for (int i=0; i < num_prod * y_width; i++) {
-        y[i] = (float)distr(eng);
-    }
-
-    for (int i=0; i < num_prod * num_prod; i++) {
-        out[i] = 0.0;
-    }
-}
+#include "matrix_generator.h"
+#include "time_utils.h"
 
 
 int test(int size, int iterations) {
@@ -43,36 +23,33 @@ int test(int size, int iterations) {
         mkl_free(out);
         return 1;
     }
-    randn_matrices(x, y, out, x_height, y_width, num_prod);
+    randn_matrices(x, y, x_height, y_width, num_prod);
+    zero_matrix(out, num_prod, num_prod);
 
     float alpha, beta;
     alpha = 1.0; beta = 0.0;
 
 
-    struct timespec start_time, end_time;
-    unsigned int sec;
-    int nsec;
+    stopwatch sw;
     double d_sec = 0;
 
     for (int num_iter=0; num_iter<(iterations+1); num_iter++) {
-        clock_gettime(CLOCK_REALTIME, &start_time);
+        if (num_iter != 0) {
+            sw.start();
+        }
 
         cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, 
             x_height, y_width, num_prod, alpha, x, num_prod, y, y_width, beta, out, y_width);
 
-        clock_gettime(CLOCK_REALTIME, &end_time);
-        sec = end_time.tv_sec - start_time.tv_sec;
-        nsec = end_time.tv_nsec - start_time.tv_nsec;
-
         if (num_iter != 0) {
-            d_sec += (double)sec + (double)nsec / (1000 * 1000 * 1000);
+            sw.stop();
         }
     }
 
-    d_sec /= iterations;
+    d_sec = sw.get_total() / iterations;
     printf("行列サイズ=%d\n", size);
     printf("計算結果=%f\n", out[x_height * y_width - 1]);
-    printf("処理時間=%lf\n", d_sec);
+    printf("処理時間=%lf\n\n", d_sec);
     
     mkl_free(x);
     mkl_free(y);
