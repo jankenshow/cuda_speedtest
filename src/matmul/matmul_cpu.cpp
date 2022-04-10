@@ -1,8 +1,10 @@
 #define MMCOL(x, dj, i, j) ((x)[(i)*(dj)+(j)])
-// #include <chrono>
+
 #include <sys/time.h>
 #include <stdio.h>
 #include <random>
+#include "time_utils.h"
+#include "matrix_generator.h"
 
 void matmul(float* out, float* x, float* y, int height, int width, int num_prod) {
     for (int i=0; i<height; i++) {
@@ -14,20 +16,6 @@ void matmul(float* out, float* x, float* y, int height, int width, int num_prod)
             }
             MMCOL(out, width, i, j) = temp;
         }
-    }
-}
-
-inline void randn_matrices (float* x, float* y, int x_height, int y_width, int num_prod) {
-    std::random_device rnd;
-    std::default_random_engine eng(rnd());
-    std::uniform_real_distribution<float> distr(-1, 1);
-
-    for (int i=0; i < x_height * num_prod; i++) {
-        x[i] = distr(eng);
-    }
-
-    for (int i=0; i < num_prod * y_width; i++) {
-        y[i] = distr(eng);
     }
 }
 
