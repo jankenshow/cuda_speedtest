@@ -46,7 +46,7 @@ void test(int size, int iterations) {
     d_sec /= iterations;
     printf("行列サイズ=%d\n", size);
     printf("計算結果=%f\n", out[x_height * y_width - 1]);
-    printf("処理時間=%lf\n", d_sec);
+    printf("処理時間=%lf\n\n", d_sec);
 
     delete[] x;
     delete[] y;
