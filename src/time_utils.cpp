@@ -73,7 +73,7 @@ double stopwatch::get_lap(int lap_id) {
 }
 
 double stopwatch::get_total() {
-    return std::accumulate(laps.begin(), laps.end(), 0);
+    return std::accumulate(laps.begin(), laps.end(), 0.0);
 }
 
 double stopwatch::calc_timems() {
@@ -86,19 +86,19 @@ double stopwatch::calc_timems() {
 
 
 // int main() {
-    // double elapsed_time_1, elapsed_time_2, elapsed_time_3;
-    // timelap_counter stop_watch{3};
-    // stop_watch.timelap();
-    // sleep(1);
-    // stop_watch.timelap();
-    // sleep(1);
-    // stop_watch.timelap();
-    // elapsed_time_1 = stop_watch.milisec_between(0, 1);
-    // elapsed_time_2 = stop_watch.milisec_between(1, 2);
-    // elapsed_time_3 = stop_watch.milisec_between(0, 2);
-    // std::cout << elapsed_time_1 << std::endl;
-    // std::cout << elapsed_time_2 << std::endl;
-    // std::cout << elapsed_time_3 << std::endl;
+//     double elapsed_time_1, elapsed_time_2, elapsed_time_3;
+//     timelap_counter stop_watch{3};
+//     stop_watch.timelap();
+//     sleep(1);
+//     stop_watch.timelap();
+//     sleep(1);
+//     stop_watch.timelap();
+//     elapsed_time_1 = stop_watch.milisec_between(0, 1);
+//     elapsed_time_2 = stop_watch.milisec_between(1, 2);
+//     elapsed_time_3 = stop_watch.milisec_between(0, 2);
+//     std::cout << elapsed_time_1 << std::endl;
+//     std::cout << elapsed_time_2 << std::endl;
+//     std::cout << elapsed_time_3 << std::endl;
 
 //     stopwatch sw;
 //     sw.start();
