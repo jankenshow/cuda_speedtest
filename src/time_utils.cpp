@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <numeric>
 
+
 timelap_counter::timelap_counter(int num_counter) {
     for (int i=0; i<num_counter; i++) {
         timespec t;
