@@ -16,4 +16,21 @@ struct timelap_counter {
     double milisec_between(int start_id, int end_id);
 };
 
+struct stopwatch {
+    std::vector<double> laps;
+    int laps_len = 0;
+
+    void start();
+    void lap();
+    void stop();
+    void reset();
+    double get_lap(int lap_id);
+    double get_total();
+
+    private:
+        timespec stime, etime;
+        bool is_on = false;
+        double calc_timems();
+};
+
 #endif
