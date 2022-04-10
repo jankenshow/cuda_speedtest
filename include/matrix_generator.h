@@ -17,8 +17,8 @@ inline void randn_matrices (float* x, float* y, int x_height, int y_width, int n
     }
 }
 
-inline void zero_matrix(float* m, int num_prod) {
-    for (int i=0; i < num_prod * num_prod; i++) {
+inline void zero_matrix(float* m, int height, int width) {
+    for (int i=0; i < height * width; i++) {
         m[i] = 0.0;
     }
 }
