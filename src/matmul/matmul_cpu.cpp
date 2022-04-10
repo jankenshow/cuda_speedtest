@@ -1,6 +1,5 @@
 #define MMCOL(x, dj, i, j) ((x)[(i)*(dj)+(j)])
 
-#include <sys/time.h>
 #include <stdio.h>
 #include <random>
 #include "time_utils.h"
