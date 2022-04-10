@@ -84,7 +84,7 @@ double stopwatch::calc_timems() {
 }
 
 
-int main() {
+// int main() {
     // double elapsed_time_1, elapsed_time_2, elapsed_time_3;
     // timelap_counter stop_watch{3};
     // stop_watch.timelap();
@@ -99,19 +99,19 @@ int main() {
     // std::cout << elapsed_time_2 << std::endl;
     // std::cout << elapsed_time_3 << std::endl;
 
-    stopwatch sw;
-    sw.start();
-    sleep(1);
-    sw.stop();
-    sleep(2);
-    sw.start();
-    sleep(4);
-    sw.lap();
-    sleep(8);
-    sw.stop();
-    for (auto t : sw.laps) {
-        std::cout << t << std::endl;
-    }
-    std::cout << sw.get_lap(1) << std::endl;
-    std::cout << sw.get_total() << std::endl;
-}
+//     stopwatch sw;
+//     sw.start();
+//     sleep(1);
+//     sw.stop();
+//     sleep(2);
+//     sw.start();
+//     sleep(4);
+//     sw.lap();
+//     sleep(8);
+//     sw.stop();
+//     for (auto t : sw.laps) {
+//         std::cout << t << std::endl;
+//     }
+//     std::cout << sw.get_lap(1) << std::endl;
+//     std::cout << sw.get_total() << std::endl;
+// }

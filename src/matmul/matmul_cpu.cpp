@@ -29,23 +29,22 @@ void test(int size, int iterations) {
     float* out = new float[x_height * y_width];
     randn_matrices(x, y, x_height, y_width, num_prod);
 
-    struct timespec start_time, end_time;
-    unsigned int sec;
-    int nsec;
-    double d_sec = 0;
+    stopwatch sw;
+    double d_sec;
 
-    for (int num_iter=0; num_iter<iterations; num_iter++) {
-        clock_gettime(CLOCK_REALTIME, &start_time);
+    for (int num_iter=0; num_iter<iterations+1; num_iter++) {
+        if (num_iter != 0) {
+            sw.start();
+        }
 
         matmul(out, x, y, x_height, y_width, num_prod);
         // printf("計算結果=%f\n", out[x_height * y_width - 1]);
 
-        clock_gettime(CLOCK_REALTIME, &end_time);
-        sec = end_time.tv_sec - start_time.tv_sec;
-        nsec = end_time.tv_nsec - start_time.tv_nsec;
-
-        d_sec += (double)sec + (double)nsec / (1000 * 1000 * 1000);
+        if (num_iter != 0) {
+            sw.stop();
+        }
     }
+    d_sec = sw.get_total();
     d_sec /= iterations;
     printf("行列サイズ=%d\n", size);
     printf("計算結果=%f\n", out[x_height * y_width - 1]);

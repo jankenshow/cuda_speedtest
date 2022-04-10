@@ -2,7 +2,7 @@ time_utils:
 	g++ --std=c++17 -O3 src/time_utils.cpp -o build/time_utils -I./include
 
 matmul_cpu:
-	g++ -std=c++17 -O3 src/matmul/matmul_cpu.cpp -o build/matmul_cpu
+	g++ -std=c++17 -O3 src/matmul/matmul_cpu.cpp src/time_utils.cpp -o build/matmul_cpu -I./include
 
 matmul_mkl:
 	g++ -O3 src/matmul/matmul_mkl.cpp -o build/matmul_mkl -I/opt/intel/mkl/include -Wl,--no-as-needed -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -ldl -lpthread -lm
