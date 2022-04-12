@@ -3,10 +3,11 @@
 
 #include <random>
 
-inline void randn_matrices (float* x, float* y, int x_height, int y_width, int num_prod) {
+template<typename T = float>
+inline void randn_matrices(T* x, T* y, int x_height, int y_width, int num_prod) {
     static std::random_device rnd;
     static std::default_random_engine eng(rnd());
-    static std::uniform_real_distribution<float> distr(-1, 1);
+    static std::uniform_real_distribution<T> distr(-1, 1);
 
     for (int i=0; i < x_height * num_prod; i++) {
         x[i] = distr(eng);
@@ -17,7 +18,8 @@ inline void randn_matrices (float* x, float* y, int x_height, int y_width, int n
     }
 }
 
-inline void zero_matrix(float* m, int height, int width) {
+template<typename T = float>
+inline void zero_matrix(T* m, int height, int width) {
     for (int i=0; i < height * width; i++) {
         m[i] = 0.0;
     }
