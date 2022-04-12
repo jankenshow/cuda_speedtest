@@ -1,5 +1,3 @@
-#define minimum(x,y) (((x) < (y)) ? (x) : (y))
-
 #include <stdio.h>
 #include "mkl.h"
 #include "matrix_generator.h"
