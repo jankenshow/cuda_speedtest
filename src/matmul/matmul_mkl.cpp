@@ -1,5 +1,3 @@
-/* C source code is found in dgemm_example.c */
-
 #define minimum(x,y) (((x) < (y)) ? (x) : (y))
 
 #include <stdio.h>
@@ -38,6 +36,7 @@ int test(int size, int iterations) {
             sw.start();
         }
 
+        // sgemm("N", "N", &x_height, &y_width, &num_prod, &alpha, x, &num_prod, y, &y_width, &beta, out, &y_width);
         cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, 
             x_height, y_width, num_prod, alpha, x, num_prod, y, y_width, beta, out, y_width);
 
@@ -50,7 +49,7 @@ int test(int size, int iterations) {
     printf("行列サイズ=%d\n", size);
     printf("計算結果=%f\n", out[x_height * y_width - 1]);
     printf("処理時間=%lf\n\n", d_sec);
-    
+
     mkl_free(x);
     mkl_free(y);
     mkl_free(out);
@@ -61,6 +60,13 @@ int test(int size, int iterations) {
 int main() {
     int iterations = 10;
     int sizes[3] = {256, 1024, 4096};
+
+    // mkl_set_dynamic(1);
+    mkl_set_num_threads(8);
+    // mkl_set_num_threads_local(8);
+    // mkl_domain_set_num_threads(8, MKL_DOMAIN_BLAS);
+    int max_threads = mkl_get_max_threads();
+    printf("thread数=%d\n\n", max_threads);
 
     for (auto& size : sizes) {
         test(size, iterations);
