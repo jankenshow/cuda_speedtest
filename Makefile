@@ -19,7 +19,9 @@ matmul_cuda:
 	nvcc -O3 src/matmul/matmul_cuda.cu -o build/matmul_cuda
 
 matmul_cublas:
-	nvcc -O3 src/matmul/matmul_cublas.cu -o build/matmul_cublas -lcublas
+	nvcc -O3 src/matmul/matmul_cublas.cu -o build/matmul_cublas -I./include -lcublas
+	# g++ -O3 src/matmul/matmul_cublas.cu -o build/matmul_cublas -I./include \
+	# -lcublas_static -lculibos -lcudart_static -lpthread -ldl -I/usr/local/cuda/include -L /usr/local/cuda/lib64
 
 mandelbrot_cuda:
 	nvcc -O3 src/mandelbrot/mandelbrot_cuda.cu -o build/mandelbrot_cuda
