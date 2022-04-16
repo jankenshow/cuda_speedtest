@@ -25,7 +25,6 @@ int test(int size, int iterations) {
     float alpha, beta;
     alpha = 1.0; beta = 0.0;
 
-
     stopwatch sw;
     double d_sec = 0;
 
