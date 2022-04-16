@@ -1,9 +1,6 @@
 #include <stdio.h>
-// #include <time.h>
 #include <sys/time.h>
-// #include <chrono>
 #include <random>
-// #include <iomanip>
 #include <cmath>
 
 
@@ -13,9 +10,6 @@ __global__ void matmul(float* out, float* x, float* y, int height, int width, in
     if (idx < width && idy < height) {
         float tmp = 0.0;
         for (int k=0; k < num_prod; k++) {
-            // int x_id = k + idy * num_prod;
-            // int y_id = idx + k * num_prod;
-            // tmp += x[x_id] * y[y_id];
             tmp += x[k + idy * num_prod] * y[idx + k * num_prod];
         }
         out[idx + idy * width] = tmp;
