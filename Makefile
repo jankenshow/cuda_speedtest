@@ -16,12 +16,10 @@ matmul_mkl_double:
 		-lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_sequential -lmkl_core -ldl -lpthread -lm -ldl
 
 matmul_cuda:
-	nvcc -O3 src/matmul/matmul_cuda.cu -o build/matmul_cuda
+	nvcc -O3 src/matmul/matmul_cuda.cu src/time_utils.cpp -o build/matmul_cuda -I./include
 
 matmul_cublas:
-	nvcc -O3 src/matmul/matmul_cublas.cu -o build/matmul_cublas -I./include -lcublas
-	# g++ -O3 src/matmul/matmul_cublas.cu -o build/matmul_cublas -I./include \
-	# -lcublas_static -lculibos -lcudart_static -lpthread -ldl -I/usr/local/cuda/include -L /usr/local/cuda/lib64
+	nvcc -O3 src/matmul/matmul_cublas.cu src/time_utils.cpp -o build/matmul_cublas -I./include -lcublas
 
 mandelbrot_cuda:
 	nvcc -O3 src/mandelbrot/mandelbrot_cuda.cu -o build/mandelbrot_cuda
