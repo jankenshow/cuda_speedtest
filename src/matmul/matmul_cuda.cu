@@ -167,8 +167,17 @@ int main(int argc, char** argv) {
     int iterations = 10;
     int sizes[3] = {256, 1024, 4096};
 
-    std::size_t pos;
-    int thread_size = std::stoi((std::string)argv[1], &pos);
+    int thread_size;
+    if (argc != 2) {
+        thread_size = 32;
+    } else {
+        std::size_t pos;
+        thread_size = std::stoi((std::string)argv[1], &pos);
+    }
+
+    if (thread_size != 16 && thread_size != 32) {
+        thread_size = 32;
+    }
 
     for (auto& size : sizes) {
         test(size, iterations, thread_size);
