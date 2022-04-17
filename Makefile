@@ -7,7 +7,7 @@ matmul_cpu:
 
 matmul_blas:
 	g++ -std=c++17 -O3 src/matmul/matmul_blas.cpp src/time_utils.cpp \
-		-o build/matmul_blas -I./include -L/usr/local/OpenBLAS/lib -lopenblas -lpthread
+		-o build/matmul_blas -I./include -lopenblas -lpthread
 
 matmul_mkl:
 	g++ -O3 -fopenmp src/matmul/matmul_mkl.cpp src/time_utils.cpp \
