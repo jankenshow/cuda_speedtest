@@ -5,6 +5,10 @@ matmul_cpu:
 	g++ -std=c++17 -O3 src/matmul/matmul_cpu.cpp src/time_utils.cpp \
 		-o build/matmul_cpu -I./include
 
+matmul_blas:
+	g++ -std=c++17 -O3 src/matmul/matmul_blas.cpp src/time_utils.cpp \
+		-o build/matmul_blas -I./include -L/usr/local/OpenBLAS/lib -lopenblas -lpthread
+
 matmul_mkl:
 	g++ -O3 -fopenmp src/matmul/matmul_mkl.cpp src/time_utils.cpp \
 		-o build/matmul_mkl -I/opt/intel/mkl/include -I./include -Wl,--no-as-needed \
