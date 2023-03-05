@@ -1,0 +1,33 @@
+---
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignConsecutiveMacros: true
+AlignOperands: true
+AlignTrailingComments: true
+
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: true
+AllowShortBlocksOnASingleLine: true
+
+BraceWrapping:
+    AfterControlStatement: false
+    AfterEnum: true
+    AfterFunction: true
+    SplitEmptyFunction: true
+    AfterStruct: true
+    AfterUnion: true
+    AfterExternBlock: false
+    BeforeCatch: false
+    BeforeElse: false
+BreakBeforeBraces: Custom
+
+SpaceAfterCStyleCast: false
+SpaceBeforeParens: ControlStatements
+SpacesBeforeTrailingComments: 4
+IndentCaseLabels: true
+IndentWidth: 4
+
+ColumnLimit: 79
+IncludeBlocks: Preserve
+PointerAlignment: Right
