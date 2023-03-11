@@ -24,6 +24,7 @@ venv.bak/
 # Distribution / packaging
 .Python
 build/
+install/
 develop-eggs/
 dist/
 downloads/
