@@ -6,12 +6,15 @@ build: clean makedir
 install:
 	cd build && make install
 
-.PHONY: clean makedir
+.PHONY: clean makedir run
 clean:
 	rm -rf build
 
 makedir:
 	mkdir build
+
+run:
+	./install/bin/run
 
 cmake_test: clean mkdir
 	cd build && cmake ..
