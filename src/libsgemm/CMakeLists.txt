@@ -32,22 +32,23 @@ file(GLOB LIB_HEADERS
     include/**/*.h
 )
 
-message(LIB_SOURCES "${LIB_SOURCES}")
-message(LIB_PRIVATE_HEADERS "${LIB_PRIVATE_HEADERS}")
+# message(LIB_SOURCES "${LIB_SOURCES}")
+# message(LIB_PRIVATE_HEADERS "${LIB_PRIVATE_HEADERS}")
 message(LIB_HEADERS "${LIB_HEADERS}")
 
 if(CUDA_FOUND)
     # message("CUDA version : " ${CUDA_VERSION})
     cuda_add_library(${LIB_NAME} STATIC
         ${LIB_SOURCES}
-        ${LIB_PRIVATE_HEADERS}
+        # ${LIB_PRIVATE_HEADERS}
     )
     target_include_directories(${LIB_NAME} INTERFACE include)
+    # target_include_directories(${LIB_NAME} PUBLIC include)
     # target_include_directories(${LIB_NAME} PRIVATE src/include)
     set_target_properties(${LIB_NAME} PROPERTIES 
         CUDA_ARCHITECTURES 
         ${CUDA_COMPUTE_CAPABILITY})
-    # cuda_add_cublas_to_target(${LIB_NAME})
+    cuda_add_cublas_to_target(${LIB_NAME})
 endif()
 
 # install library
