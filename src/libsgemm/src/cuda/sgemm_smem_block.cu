@@ -1,15 +1,15 @@
 #include <cublas_v2.h>
 #include <cuda_runtime.h>
 
-#include "helper.h"
+#include "../include/helper.h"
 
 template <const int BLOCKSIZE>
-__global__ void sgemm_shared_mem_block(int M, int N, int K, float alpha,
-                                       const float *A, const float *B,
-                                       float beta, float *C)
+__global__ void sgemm_smem_block_kernel(int M, int N, int K, float alpha,
+                                        const float *A, const float *B,
+                                        float beta, float *C)
 {
     const uint cRow = blockIdx.x;
-    const uint cCol = blockIdy.y;
+    const uint cCol = blockIdx.y;
 
     __shared__ float As[BLOCKSIZE];
     __shared__ float Bs[BLOCKSIZE];
@@ -38,4 +38,20 @@ __global__ void sgemm_shared_mem_block(int M, int N, int K, float alpha,
     }
     C[threadRow * N + threadCol] =
         alpha * tmp + beta * C[threadRow * N + threadCol];
+}
+
+void sgemm_smem_block(int M, int N, int K, float alpha, float *A, float *B,
+                      float beta, float *C)
+{
+    dim3 gridDim(CEIL_DIV(M, 32), CEIL_DIV(N, 32));
+    dim3 blockDim(32 * 32);
+    // L1 cache becomes useless, since we access GMEM only via SMEM, so we
+    // carve out all of L1 to SMEM. This doesn't currently make a difference,
+    // since occupancy is limited by reg and thread count, but it's good to do
+    // anyway.
+    cudaFuncSetAttribute(sgemm_smem_block_kernel<32>,
+                         cudaFuncAttributePreferredSharedMemoryCarveout,
+                         cudaSharedmemCarveoutMaxShared);
+    sgemm_smem_block_kernel<32>
+        <<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
 }

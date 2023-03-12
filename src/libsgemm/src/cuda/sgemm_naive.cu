@@ -1,7 +1,7 @@
 #include <cublas_v2.h>
 #include <cuda_runtime.h>
 
-#include "helper.h"
+#include "../include/helper.h"
 
 __global__ void sgemm_naive_kernel(int M, int N, int K, float alpha,
                                    const float *A, const float *B, float beta,
