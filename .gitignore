@@ -20,6 +20,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.vscode/
 
 # Distribution / packaging
 .Python
