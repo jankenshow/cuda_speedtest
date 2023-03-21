@@ -1,15 +1,15 @@
-# 概要
+# 概要  
 
-- cuda の書き方での速度比較 (`sgemm`)
-- cuda vs cpuで速度比較 (`matmul`, 一部gemmを利用) 
-- mandelbrotをCUDAで実行
+- cuda の書き方での速度比較 (`sgemm`)  
+- cuda vs cpuで速度比較 (`matmul`, 一部gemmを利用)  
+- mandelbrotをCUDAで実行  
 
-# インストール
+# インストール  
 
 cmakeでビルドできるのは`sgemm`のみ  
 残り二つは、各ディレクトリで`nvcc`を利用してビルド。  
 
-## sgemm
+## sgemm  
 
 ```
 $ mkdir build && cd build
@@ -17,36 +17,36 @@ $ cmake ..
 $ make
 ```
 
-必要であれば　`make`実行後に`make install`をしても良い。
+必要であれば　`make`実行後に`make install`をしても良い。  
 
-## matmul
+## matmul  
 
 ```
 $ cd src/matmul
 $ make
 ```
 
-## mandelbrot
+## mandelbrot  
 
 ```
 $ cd src/mandelbrot
 $ make
 ```
 
-# 実行
+# 実行  
 
-## sgemm
-
-
-## matmul
+## sgemm  
 
 
-## mandelbrot
+## matmul  
 
 
-# ディレクトリ構造
+## mandelbrot  
 
-以下を予定。
+
+# ディレクトリ構造  
+
+以下を予定。  
 
 ```
 .
@@ -69,10 +69,12 @@ $ make
     │   │   │   └── time_utils.h
     │   │   ├── cpu
     │   │   │   └── sgemm_cpu.h
-    │   │   └── cuda
-    │   │       ├── sgemm_coalescing.h
-    │   │       ├── sgemm_naive.h
-    │   │       └── sgemm_smem_block.h
+    │   │   ├── cuda
+    │   │   │   ├── sgemm_coalescing.h
+    │   │   │   ├── sgemm_naive.h
+    │   │   │   └── sgemm_smem_block.h
+    │   │   ├── kernels.h # TODO
+    │   │   └── tools.h
     │   ├── src
     │   │   ├── include # プライベートヘッダー
     │   │   ├── utils
@@ -84,6 +86,7 @@ $ make
     │   │       ├── sgemm_naive.cu
     │   │       └── sgemm_smem_block.cu
     │   └── tools
+    │       └── runner.cpp
     ├── mandelbrot 
     │   ├── Makefile
     │   └── mandelbrot_cuda.cu
@@ -101,23 +104,32 @@ $ make
     │   ├── matmul_mkl_double.cpp
     │   └── time_utils.cpp
     └── sgemm
-        └── runner.cpp　# TODO
+        └── run.cpp　# TODO
 ```
 
-# TODO
+# TODO  
 
-- `runner.cpp` の整理
-- 
+- `run.cpp` の整理  
+    - 速度測定用の実装(`libsgemm/tools/time_kernel.cu`などを作成)
+    - run.cppの実装 
+        - 速度測定用の実装を呼び出す
+        - 結果出力
+- cuda kernelsの拡充  
+- cublasによるsgemmの追加  
+- 結果をまとめる  
 
-# (優先度:低) 整理しておきたいこと
+# (優先度:低) 整理しておきたいこと  
 
 include方法は "CMakeLists.txtの修正" を含む  
 
-- `sgemm関数`内のinclude(ヘッダファイル)に関してinclude方法(#include "../include/helper.h" vs "helper.h")  
+- `libsgemm`内のプライベートヘッダファイルを美しくincludeしたい(#include "../include/helper.h" vs "helper.h")  
+    - 現状のままで良いかも
 - `time_utils.cpp`に関して、interfaceヘッダファイルのinclude方法 -> publicにすれば良い？ or ファイル単体を指定したtarget_include~  
-- プロジェクト内のソースコードについて、libsgemmの外(`runner.cpp`など)から、libsgemmのヘッダファイルをincludeする方法  
 - `matrix_generator.h`の分割  
-- install先で ヘッダファイルをディレクトリごとに分ける(`cpu`, `cuda`, `utils`) + generalなincludeファイルを作成する。のようにするかどうか。  
+- プロジェクト内のソースコードについて、libsgemmの外(`run.cpp`など)から、libsgemmのヘッダファイルをincludeする方法  
+    - 下記のinstallディレクトリ構造を変更して対応するなど。
+- install先で ヘッダファイルをディレクトリごとに分ける
+    - (`cpu`, `cuda`, `utils`) + generalなincludeファイル(`kernels.h`)を作成するなど。  
 
 - vscodeでCUDAの記法に対するエラーが発生するので、その対応  
 - vscodeでCMake extension設定  
