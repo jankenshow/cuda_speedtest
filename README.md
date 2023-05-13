@@ -6,6 +6,9 @@
 
 # インストール
 
+cmakeでビルドできるのは`sgemm`のみ  
+残り二つは、各ディレクトリで`nvcc`を利用してビルド。  
+
 ## sgemm
 
 ```
@@ -49,36 +52,37 @@ $ make
 .
 ├── build
 ├── install
-├── CMakeLists.txt # TODO
-├── Makefile # TODO
+├── CMakeLists.txt
+├── Makefile
 ├── python
 │   ├── matmul_numpy_mkl.ipynb
 │   ├── matmul_on_cpu.ipynb
 │   ├── matmul_on_gpu.ipynb
 │   └── mean_shift.ipynb
-├── README.md # TODO
+├── README.md
 └── src
-    ├── libsgemm # TODO
+    ├── libsgemm
     │   ├── CMakeLists.txt
     │   ├── include
     │   │   ├── utils
     │   │   │   ├── matrix_generator.h
     │   │   │   └── time_utils.h
     │   │   ├── cpu
+    │   │   │   └── sgemm_cpu.h
     │   │   └── cuda
-    │   │       ├── sgemm_global_mem_coalesce.h
+    │   │       ├── sgemm_coalescing.h
     │   │       ├── sgemm_naive.h
-    │   │       └── sgemm_shared_mem_block.h
+    │   │       └── sgemm_smem_block.h
     │   ├── src
-    │   │   ├── include # プライベートヘッダー (空ディレクトリの予定)
+    │   │   ├── include # プライベートヘッダー
     │   │   ├── utils
     │   │   │   ├── matrix_generator.cpp
     │   │   │   └── time_utils.cpp
     │   │   ├── cpu # cpu上のsgemm実施
     │   │   └── cuda
-    │   │       ├── sgemm_global_mem_coalesce.cu
+    │   │       ├── sgemm_coalescing.cu
     │   │       ├── sgemm_naive.cu
-    │   │       └── sgemm_shared_mem_block.cu
+    │   │       └── sgemm_smem_block.cu
     │   └── tools
     ├── mandelbrot 
     │   ├── Makefile
@@ -99,3 +103,21 @@ $ make
     └── sgemm
         └── runner.cpp　# TODO
 ```
+
+# TODO
+
+- `runner.cpp` の整理
+- 
+
+# (優先度:低) 整理しておきたいこと
+
+include方法は "CMakeLists.txtの修正" を含む  
+
+- `sgemm関数`内のinclude(ヘッダファイル)に関してinclude方法(#include "../include/helper.h" vs "helper.h")  
+- `time_utils.cpp`に関して、interfaceヘッダファイルのinclude方法 -> publicにすれば良い？ or ファイル単体を指定したtarget_include~  
+- プロジェクト内のソースコードについて、libsgemmの外(`runner.cpp`など)から、libsgemmのヘッダファイルをincludeする方法  
+- `matrix_generator.h`の分割  
+- install先で ヘッダファイルをディレクトリごとに分ける(`cpu`, `cuda`, `utils`) + generalなincludeファイルを作成する。のようにするかどうか。  
+
+- vscodeでCUDAの記法に対するエラーが発生するので、その対応  
+- vscodeでCMake extension設定  
