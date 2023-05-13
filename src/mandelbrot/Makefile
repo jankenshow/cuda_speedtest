@@ -1,6 +1,21 @@
+mandelbrot_cpp: clean
+	g++ -Ofast -march=native mandelbrot.cpp -o build/mandelbrot
+
+mandelbrot_omp: clean
+	g++ -Ofast -fopenmp -march=native mandelbrot_omp.cpp -o build/mandelbrot
+
+mandelbrot_simd: clean
+	g++ -Ofast -fopenmp -march=native -mavx2 mandelbrot_simd.cpp -o build/mandelbrot
+
+mandelbrot_gpt: clean
+	g++ -Ofast -fopenmp -march=native -mavx2 mandelbrot_gpt.cpp -o build/mandelbrot
+
 mandelbrot_cuda: clean
-	nvcc -O3 src/mandelbrot/mandelbrot_cuda.cu -o build/mandelbrot_cuda
+	nvcc -O3 mandelbrot_cuda.cu -o build/mandelbrot
 
 .PHONY: clean
 clean:
 	rm -rf build && mkdir build
+
+run:
+	OMP_NUM_THREADS=128 ./build/mandelbrot
