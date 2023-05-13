@@ -1,6 +1,9 @@
 # Git
 !.gitkeep
 
+# editor
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -24,6 +27,8 @@ venv.bak/
 # Distribution / packaging
 .Python
 build/
+__build/
+install/
 develop-eggs/
 dist/
 downloads/
