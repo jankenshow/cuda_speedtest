@@ -8,7 +8,7 @@ mandelbrot_avx2: clean
 	g++ -Ofast -fopenmp -march=native -mavx2 mandelbrot_avx2.cpp -o build/mandelbrot `pkg-config opencv4 --cflags --libs`
 
 mandelbrot_avx512: clean
-	g++ -Ofast -fopenmp -march=native -mavx2 mandelbrot_avx512.cpp -o build/mandelbrot `pkg-config opencv4 --cflags --libs`
+	g++ -Ofast -fopenmp -march=native -mavx512f mandelbrot_avx512.cpp -o build/mandelbrot `pkg-config opencv4 --cflags --libs`
 
 mandelbrot_gpt: clean
 	g++ -Ofast -fopenmp -march=native -mavx2 mandelbrot_gpt.cpp -o build/mandelbrot `pkg-config opencv4 --cflags --libs`
