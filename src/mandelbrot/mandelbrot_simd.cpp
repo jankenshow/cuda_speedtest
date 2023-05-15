@@ -1,10 +1,10 @@
-#include <immintrin.h>
-
 #include <chrono>
-#include <cmath>
-#include <complex>
+#include <immintrin.h>
 #include <iostream>
+#include <omp.h>
 #include <vector>
+
+#include <opencv2/opencv.hpp>
 
 constexpr double xmin     = -1.75f;
 constexpr double xmax     = 0.75f;
@@ -13,37 +13,6 @@ constexpr double ymax     = 1.25f;
 constexpr int    height   = 4096;
 constexpr int    width    = 4096;
 constexpr int    max_iter = 500;
-
-// class ComplexSIMD : public std::complex<__m256> {
-//   public:
-//     ComplexSIMD(__m256 real, __m256 imag) : std::complex<__m256>(real, imag)
-//     {}
-
-//     ComplexSIMD operator+(const ComplexSIMD &other) const
-//     {
-//         __m256 real_res = _mm256_add_ps(real(), other.real());
-//         __m256 imag_res = _mm256_add_ps(imag(), other.imag());
-//         return ComplexSIMD(real_res, imag_res);
-//     }
-
-//     ComplexSIMD operator*(const ComplexSIMD &other) const
-//     {
-//         __m256 real_res = _mm256_sub_ps(_mm256_mul_ps(real(), other.real()),
-//                                         _mm256_mul_ps(imag(),
-//                                         other.imag()));
-//         __m256 imag_res = _mm256_add_ps(_mm256_mul_ps(real(), other.imag()),
-//                                         _mm256_mul_ps(imag(),
-//                                         other.real()));
-//         return ComplexSIMD(real_res, imag_res);
-//     }
-
-//     __m256 abs() const
-//     {
-//         __m256 real_squared = _mm256_mul_ps(real(), real());
-//         __m256 imag_squared = _mm256_mul_ps(imag(), imag());
-//         return _mm256_sqrt_ps(_mm256_add_ps(real_squared, imag_squared));
-//     }
-// };
 
 class ComplexSIMD {
   public:
@@ -58,18 +27,17 @@ class ComplexSIMD {
 
     ComplexSIMD operator*(const ComplexSIMD &other) const
     {
-        __m256 real_res = _mm256_sub_ps(_mm256_mul_ps(real(), other.real()),
-                                        _mm256_mul_ps(imag(), other.imag()));
-        __m256 imag_res = _mm256_add_ps(_mm256_mul_ps(real(), other.imag()),
-                                        _mm256_mul_ps(imag(), other.real()));
+        __m256 real_res = _mm256_fmsub_ps(real(), other.real(),
+                                          _mm256_mul_ps(imag(), other.imag()));
+        __m256 imag_res = _mm256_fmadd_ps(real(), other.imag(),
+                                          _mm256_mul_ps(imag(), other.real()));
         return ComplexSIMD(real_res, imag_res);
     }
 
     __m256 abs() const
     {
-        __m256 real_squared = _mm256_mul_ps(real(), real());
-        __m256 imag_squared = _mm256_mul_ps(imag(), imag());
-        return _mm256_sqrt_ps(_mm256_add_ps(real_squared, imag_squared));
+        return _mm256_sqrt_ps(
+            _mm256_fmadd_ps(real(), real(), _mm256_mul_ps(imag(), imag())));
     }
 
     __m256 real() const { return real_; }
@@ -91,8 +59,6 @@ __m256i mandelbrot_kernel(ComplexSIMD &c)
         __m256 mask = _mm256_cmp_ps(z.abs(), _mm256_set1_ps(2.0f), _CMP_LT_OS);
         __m256i mask_i = _mm256_castps_si256(mask);
         iter           = _mm256_sub_epi32(iter, mask_i);
-        // iter           = _mm256_add_epi32(
-        //     iter, _mm256_and_si256(mask_i, _mm256_set1_epi32(0x00000001)));
 
         if (_mm256_movemask_ps(mask) == 0) {
             break;
@@ -105,8 +71,6 @@ __m256i mandelbrot_kernel(ComplexSIMD &c)
 std::vector<std::vector<int>>
 compute_mandelbrot(std::vector<std::vector<int>> &image)
 {
-    // __m256 c_real, c_imag;
-
     double dx = (xmax - xmin) / width;
     double dy = (ymax - ymin) / height;
 
@@ -134,6 +98,23 @@ compute_mandelbrot(std::vector<std::vector<int>> &image)
     return image;
 }
 
+void save_image(const std::vector<std::vector<int>> &image,
+                const std::string                   &path)
+{
+    int height = image.size();
+    int width  = image[0].size();
+
+    cv::Mat img(height, width, CV_8U);
+
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            img.at<uchar>(i, j) = image[i][j];
+        }
+    }
+
+    cv::imwrite(path, img);
+}
+
 int main()
 {
     std::vector<std::vector<int>> image(height, std::vector<int>(width));
@@ -144,16 +125,9 @@ int main()
 
     auto elapsed_time =
         std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
-
-    // for (auto &row : image) {
-    //     for (auto &elem : row) {
-    //         std::cout << elem << ",";
-    //     }
-    //     std::cout << std::endl;
-    // }
-
     std::cout << "elapsed time: " << double(elapsed_time) / 1000 << "ms"
               << std::endl;
+    save_image(image, "output.png");
 
     return 0;
 }

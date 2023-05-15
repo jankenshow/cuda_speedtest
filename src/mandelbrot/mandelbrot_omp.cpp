@@ -4,10 +4,8 @@
 #include <iostream>
 #include <vector>
 
-// constexpr double xmin     = -1.75f;
-// constexpr double xmax     = 0.75f;
-// constexpr double ymin     = -1.25f;
-// constexpr double ymax     = 1.25f;
+#include <opencv2/opencv.hpp>
+
 constexpr float xmin     = -1.75f;
 constexpr float xmax     = 0.75f;
 constexpr float ymin     = -1.25f;
@@ -51,6 +49,23 @@ compute_mandelbrot(std::vector<std::vector<int>> &image)
     return image;
 }
 
+void save_image(const std::vector<std::vector<int>> &image,
+                const std::string                   &path)
+{
+    int height = image.size();
+    int width  = image[0].size();
+
+    cv::Mat img(height, width, CV_8U);
+
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            img.at<uchar>(i, j) = image[i][j];
+        }
+    }
+
+    cv::imwrite(path, img);
+}
+
 int main()
 {
     std::vector<std::vector<int>> image(height, std::vector<int>(width));
@@ -61,9 +76,9 @@ int main()
 
     auto elapsed_time =
         std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
-
     std::cout << "elapsed time: " << double(elapsed_time) / 1000 << "ms"
               << std::endl;
+    save_image(image, "output.png");
 
     return 0;
 }

@@ -5,6 +5,8 @@
 #include <thread>
 #include <vector>
 
+#include <opencv2/opencv.hpp>
+
 constexpr int   MAX_ITER = 1000;
 constexpr float X_MIN    = -2.0f;
 constexpr float X_MAX    = 1.0f;
@@ -54,6 +56,19 @@ void mandelbrot(std::vector<int> &image, int startY, int endY)
     }
 }
 
+void save_image(const std::vector<int> &image, const std::string &path)
+{
+    cv::Mat img(HEIGHT, WIDTH, CV_8U);
+
+    for (int i = 0; i < HEIGHT; ++i) {
+        for (int j = 0; j < WIDTH; ++j) {
+            img.at<uchar>(i, j) = image[i * WIDTH + j];
+        }
+    }
+
+    cv::imwrite(path, img);
+}
+
 int main()
 {
     std::vector<int>         image(WIDTH * HEIGHT);
@@ -77,11 +92,7 @@ int main()
         std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
     std::cout << "elapsed time: " << double(elapsed_time) / 1000 << "ms"
               << std::endl;
-
-    // std::cout << "P2\n" << WIDTH << ' ' << HEIGHT << '\n' << "255\n";
-    // for (int i = 0; i < WIDTH * HEIGHT; ++i) {
-    //     std::cout << image[i] << '\n';
-    // }
+    save_image(image, "output.png");
 
     return 0;
 }
