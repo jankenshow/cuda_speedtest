@@ -6,13 +6,13 @@
 
 #include <opencv2/opencv.hpp>
 
-constexpr double xmin     = -1.75f;
-constexpr double xmax     = 0.75f;
-constexpr double ymin     = -1.25f;
-constexpr double ymax     = 1.25f;
-constexpr int    height   = 4096;
-constexpr int    width    = 4096;
-constexpr int    max_iter = 500;
+constexpr float xmin     = -1.75f;
+constexpr float xmax     = 0.75f;
+constexpr float ymin     = -1.25f;
+constexpr float ymax     = 1.25f;
+constexpr int   height   = 4096;
+constexpr int   width    = 4096;
+constexpr int   max_iter = 500;
 
 class ComplexSIMD {
   public:
@@ -71,8 +71,8 @@ __m256i mandelbrot_kernel(ComplexSIMD &c)
 std::vector<std::vector<int>>
 compute_mandelbrot(std::vector<std::vector<int>> &image)
 {
-    double dx = (xmax - xmin) / width;
-    double dy = (ymax - ymin) / height;
+    float dx = (xmax - xmin) / width;
+    float dy = (ymax - ymin) / height;
 
 #pragma omp parallel for collapse(2)
     for (int j = 0; j < height; j++) {
