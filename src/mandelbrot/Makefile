@@ -16,6 +16,10 @@ mandelbrot_gpt: clean
 mandelbrot_cuda: clean
 	nvcc -O3 mandelbrot_cuda.cu -o build/mandelbrot
 
+# For arm64 macbook. Instructins are based on Armv8.4a.
+mandelbrot_armneon: clean
+	clang++ -std=c++17 -O3 -Xclang -fopenmp -L/opt/homebrew/opt/libomp/lib -I/opt/homebrew/opt/libomp/include -lomp -o build/mandelbrot mandelbrot_armneon.cpp
+
 .PHONY: clean
 clean:
 	rm -rf build && mkdir build
