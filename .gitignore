@@ -47,6 +47,7 @@ MANIFEST
 
 # images
 # images/
+output.png
 
 # logs
 *.log
